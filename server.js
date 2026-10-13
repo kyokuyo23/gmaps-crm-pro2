@@ -22,6 +22,13 @@ const ENGINE_URL = (process.env.ENGINE_URL || 'https://gmst.dewa.ai.id/api/gcrm'
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Vercel: filesystem read-only kecuali /tmp (data tidak permanen antar instance).
+if (process.env.VERCEL) {
+  for (const [key, file] of [['CRM_FILE', 'crm-data.json'], ['LICENSE_FILE', 'license.json'], ['PAYMENT_STORE_FILE', 'licenses.json'], ['PAYMENT_ORDERS_FILE', 'payments.json']]) {
+    process.env[key] ||= path.join(os.tmpdir(), file);
+  }
+}
+
 const PORT = process.env.PORT || 3219;
 const PUBLIC_DIR = path.join(__dirname, 'public');
 
